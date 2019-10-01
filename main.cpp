@@ -26,7 +26,7 @@ void finish();
 
 char map[SIZE_Y][SIZE_X];
 vector<int> col;
-vector<vector<int>> body;
+vector<vector<int> > body;
 int len = 1;
 int tempLen = 1;
 bool win = false;

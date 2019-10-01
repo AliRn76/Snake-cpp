@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <time.h>
+#include <vector>
 
 #define SIZE_X 40
 #define SIZE_Y 20
@@ -22,8 +23,12 @@ bool winCheck();
 void finish();
 
 char map[SIZE_Y][SIZE_X];
+vector<int> col;
+vector<vector<int>> body;
 int len = 1;
 bool win = false;
+int foodI, foodJ;
+
 
 void setBorder(){
     for(int i=0 ; i<SIZE_Y; i++){
@@ -48,14 +53,16 @@ void showConsoleCursor  (bool showFlag) {
 void clearScreen(){
             COORD start_pos;
             HANDLE hOut;
-
             start_pos = {0 , 0};
             hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-
        //     system("cls");
             SetConsoleCursorPosition(hOut, start_pos);
             showConsoleCursor(false);
-        }
+}
+
+void setFoodPosition(){
+    map[foodI][foodJ] = 'f';
+}
 
 void printMap(){
     clearScreen();
@@ -74,6 +81,8 @@ void printMap(){
         }
         cout << endl;
     }
+    setBorder();
+    setFoodPosition();
 }
 
 
@@ -159,26 +168,19 @@ int goRight(int i, int j){
 }
 
 void setFood(int i, int j){
-    map[i][j] = 'f';
+    foodI = i;
+    foodJ = j;
 }
 
 void food(){
     srand(time(NULL));
 
-    int i, j;
+    foodI = rand() % SIZE_Y - 1;
+    foodJ = rand() % SIZE_X - 1 ;
 
-    i = rand() % SIZE_Y - 1;
-    j = rand() % SIZE_X - 1 ;
-
-    if (map[i][j] == ' ' ){
-        map[i][j] = 'f';
-    }
-    else{
-        while(map[i][j] !=  ' '){
-            i = rand() % SIZE_Y - 1;
-            j = rand() % SIZE_X - 1;
-        };
-        map[i][j] = 'f';
+    while(map[foodI][foodJ] !=  ' '){
+        foodI = rand() % SIZE_Y - 1;
+        foodJ = rand() % SIZE_X - 1;
     }
 }
 
@@ -204,7 +206,6 @@ void showLen(){
 bool winCheck(){
     if(len == WINLEN ){
         win = true;
-        cout<< "YOU WIN" ;
     }
     return win;
 }

@@ -104,8 +104,6 @@ void setPlayer(int i, int j){
 
 void movePlayer(int i, int j){
     char get_key;
-    // chon felan sharte win nadare :)
-//    bool win = false;
     while(!winCheck() && !crash){
         get_key = _getch();
 

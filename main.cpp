@@ -7,7 +7,7 @@
 
 #define SIZE_X 40
 #define SIZE_Y 20
-#define WINLEN 11
+#define WINLEN 8
 #define STIME 100
 
 using namespace std;
@@ -20,6 +20,8 @@ int goRight(int i, int j);
 void move();
 void food();
 void checkFood(int i, int j);
+//void bodyCheck(int i, int j);
+void wallCheck(int i, int j);
 void showLen();
 bool winCheck();
 void finish();
@@ -31,7 +33,7 @@ int len = 1;
 int tempLen = 1;
 bool win = false;
 int foodI, foodJ;
-
+bool crash = false;
 
 void setBorder(){
     for(int i=0 ; i<SIZE_Y; i++){
@@ -73,7 +75,6 @@ void printMap(){
         for(int j=0 ; j<SIZE_X; j++){
             if(map[i][j] == '#'){
                 cout << (char)219 << (char)219 ;
-
             }else if(map[i][j] == ' '){
                 cout << "  ";
             }else if(map[i][j] == 'p'){
@@ -103,31 +104,32 @@ void setPlayer(int i, int j){
 
 void movePlayer(int i, int j){
     char get_key;
-    bool win = false;
-    while(!winCheck()){
+    // chon felan sharte win nadare :)
+//    bool win = false;
+    while(!winCheck() && !crash){
         get_key = _getch();
 
         switch(get_key){
             case 'w':
-                while(!kbhit() && !winCheck()){
+                while(!kbhit() && !winCheck() && !crash){
                     i = goUp(i, j);
                 }
                 break;
 
             case 'a':
-                while(!kbhit() && !winCheck()){
+                while(!kbhit() && !winCheck() && !crash){
                     j = goLeft(i, j);
                 }
                 break;
 
             case 's':
-                while(!kbhit() && !winCheck()){
+                while(!kbhit() && !winCheck() && !crash){
                     i = goDown(i, j);
                 }
                 break;
 
             case 'd':
-                while(!kbhit() && !winCheck()){
+                while(!kbhit() && !winCheck() && !crash){
                     j = goRight(i, j);
                 }
                 break;
@@ -141,10 +143,9 @@ int goUp(int i, int j){
     col.push_back(i);
     col.push_back(j);
     checkFood(i, j);
+//    bodyCheck(i, j);
+    wallCheck(i, j);
     move();
-
-  //  cout <<" i: " << body[0][0] << " j: " << body[0][1] << endl;
-
     printMap();
     showLen();
     Sleep(STIME);
@@ -157,10 +158,9 @@ int goLeft(int i, int j){
     col.push_back(i);
     col.push_back(j);
     checkFood(i, j);
+//    bodyCheck(i, j);
+    wallCheck(i, j);
     move();
-
-  //  cout <<" i: " << body[0][0] << " j: " << body[0][1] << endl;
-
     printMap();
     showLen();
     Sleep(STIME);
@@ -173,10 +173,9 @@ int goDown(int i, int j){
     col.push_back(i);
     col.push_back(j);
     checkFood(i, j);
+//    bodyCheck(i, j);
+    wallCheck(i, j);
     move();
-
-   // cout <<" i: " << body[0][0] << " j: " << body[0][1] << endl;
-
     printMap();
     showLen();
     Sleep(STIME);
@@ -189,10 +188,9 @@ int goRight(int i, int j){
     col.push_back(i);
     col.push_back(j);
     checkFood(i, j);
+//    bodyCheck(i, j);
+    wallCheck(i, j);
     move();
-
-//    cout <<" i: " << body[0][0] << " j: " << body[0][1] << endl;
-
     printMap();
     showLen();
     Sleep(STIME);
@@ -200,6 +198,7 @@ int goRight(int i, int j){
 }
 
 void move(){
+	// If snake ate a food
     if(tempLen != len){
         //body.pop_back();
         body.push_back(col);
@@ -251,8 +250,21 @@ void showLen(){
 
     SetConsoleCursorPosition(hOut, start_pos);
 
-    cout << "Your Point: " << len-1;
+    cout << "Your Point: " << len;
 }
+
+void wallCheck(int i, int j){
+	if(map[i][j] == '#'){
+		crash = true;
+	}
+}
+
+// Baadan Inam Fix Mikonm, Baraye Aln Kafie
+//void bodyCheck(int i, int j){
+//	if(map[i][j] == 'p'){
+//		crash = true;
+//	}
+//}
 
 bool winCheck(){
     if(len == WINLEN ){
@@ -305,6 +317,7 @@ int main(){
                 len = 1;
                 tempLen = 1;
                 win = false;
+                crash = false;
                 setBorder();
                 setFood(10,15);
                 setPlayer(10,10);
